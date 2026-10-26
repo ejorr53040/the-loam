@@ -1,0 +1,704 @@
+<title>The Loam</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500&family=Fragment+Mono&display=swap">
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   ejorr — brand tokens
+   THE single source of truth. components.css, the artifact head block and
+   every other target derive from this file; none of them redefine a value.
+
+   Direction: clear glass pages (DeepSeek) + blueprint technical imagery.
+   Each section sits on a sky panel; content sits on frosted glass; pictures
+   are blueprint drawings on navy tiles.
+
+   Theme contract — all three viewer states are covered, in this order:
+     1. bare :root                      → complete LIGHT palette (the canonical look)
+     2. @media (prefers-color-scheme:dark) guarded :root:not([data-theme="light"])
+     3. :root[data-theme="dark"]        → so an explicit toggle wins both ways
+   Never give a colour its only definition inside 2 or 3.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── surfaces ─────────────────────────────────────────────────────────── */
+  --bg:            #F9F8F8;   /* page ground between sky panels             */
+  --surface:       #FFFFFF;   /* solid panels: tables, code, popovers       */
+  --inset:         #EEF1F7;   /* recessed: table heads, code blocks         */
+  --sky:           #DFE6FF;   /* top of a sky panel; fades down to --bg     */
+  --glass:         rgba(255, 255, 255, 0.42); /* frosted card fill          */
+  --glass-edge:    rgba(255, 255, 255, 0.8);  /* frosted card hairline      */
+  --cloud:         #FFFFFF;   /* brightest point of a cloud in the baked sky;
+                                 glass contrast is audited over it          */
+
+  /* ── lines ────────────────────────────────────────────────────────────── */
+  --border:        #D3D8E3;   /* hairline separator, decorative             */
+  --border-control:#7E879A;   /* form-control boundary, must clear 3:1      */
+
+  /* ── text ─────────────────────────────────────────────────────────────── */
+  --text:          #121C31;
+  --dim:           #5B6476;
+
+  /* ── accent: TWO TIERS of DeepSeek blue, not interchangeable ──────────── */
+  --fill:          #4D6BFE;   /* lines, fills, image strokes, focus ring.
+                                 4.08:1 on --bg: a UI colour, NEVER text.   */
+  --link:          #3352E8;   /* anything read as text: links, emphasis,
+                                 primary button labels. 5.64:1 on --bg.     */
+  --wash:          #EAEEFF;   /* tinted ground for chips and callouts       */
+
+  /* ── semantic (separate from the accent) ──────────────────────────────── */
+  --ok:            #2E7556;
+  --warn:          #86640F;
+  --err:           #BC3A33;
+  --on-err:        #FFFFFF;
+
+  /* ── imagery: blueprint tiles, same in both themes ────────────────────── */
+  --tile:          #0D1B3D;   /* solid ground behind every drawing          */
+  --tile-line:     #CFE0FF;   /* drawing lines and title-block text         */
+  --tile-hl:       #7D93FF;   /* the one highlighted part of a drawing      */
+
+  /* ── shape ────────────────────────────────────────────────────────────── */
+  --r-panel: 16px;            /* sky panels                                 */
+  --r-card:  10px;            /* glass cards, tables, inputs                */
+  --r-pill:  999px;           /* every button and chip                      */
+  --blur:    14px;            /* glass backdrop blur                        */
+
+  /* ── type ─────────────────────────────────────────────────────────────── */
+  --font-head: "Outfit", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "Fragment Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-body: var(--font-mono);  /* everything that isn't a headline is mono.
+                                     Fragment Mono has ONE weight: never ask
+                                     for bold body text; emphasise with --link. */
+
+  --t-label: 11px;    /* uppercase eyebrows, 0.1em tracking */
+  --t-xs:    12px;    /* table cells, chips, metadata       */
+  --t-sm:    13px;    /* secondary body                     */
+  --t-base:  14.5px;  /* body (mono runs wide; 14.5 ≈ 16 sans) */
+  --t-md:    18px;
+  --t-lg:    24px;
+  --t-xl:    clamp(32px, 6vw, 48px);
+
+  /* ── spacing: 4px base ────────────────────────────────────────────────── */
+  --s1: 2px;  --s2: 4px;  --s3: 8px;  --s4: 12px; --s5: 16px;
+  --s6: 24px; --s7: 32px; --s8: 48px; --s9: 64px;
+
+  --measure: 70ch;     /* running-text width ceiling (mono) */
+  --gutter: 20px;      /* page side gutter, never below 16px */
+  --wrap: 1080px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A0C14; --surface: #11141E; --inset: #171B28;
+    --sky: #1A2450; --cloud: #4A5378;
+    --glass: rgba(10, 12, 20, 0.45); --glass-edge: rgba(255, 255, 255, 0.2);
+    --border: #2C3242; --border-control: #6B748A;
+    --text: #EEF1F8; --dim: #A3A8B8;
+    --fill: #6F88FF; --link: #8EA2FF; --wash: #161D3D;
+    --ok: #5FBF95; --warn: #D9B45A; --err: #FF7B72; --on-err: #0A0C14;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0A0C14; --surface: #11141E; --inset: #171B28;
+  --sky: #1A2450; --cloud: #4A5378;
+    --glass: rgba(10, 12, 20, 0.45); --glass-edge: rgba(255, 255, 255, 0.2);
+  --border: #2C3242; --border-control: #6B748A;
+  --text: #EEF1F8; --dim: #A3A8B8;
+  --fill: #6F88FF; --link: #8EA2FF; --wash: #161D3D;
+  --ok: #5FBF95; --warn: #D9B45A; --err: #FF7B72; --on-err: #0A0C14;
+  color-scheme: dark;
+}
+/* ═══════════════════════════════════════════════════════════════════════════
+   ejorr — components
+   Requires tokens.css. Every value here comes from a token; if you need a
+   colour that isn't in tokens.css, add it there, not here.
+
+   Page grammar: each section is a .sky panel; content inside it sits on
+   .glass cards; pictures sit on .tile (navy) — see imagery.md.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);            /* explicit: a transparent body borrows
+                                       the host's theme and breaks */
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--t-base);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── layout ─────────────────────────────────────────────────────────────── */
+.wrap    { max-width: var(--wrap); margin: 0 auto;
+           padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+           padding-right: max(var(--gutter), env(safe-area-inset-right, 0px)); }
+.stack   { display: flex; flex-direction: column; gap: var(--s5); }
+.row     { display: flex; align-items: center; gap: var(--s4); flex-wrap: wrap; }
+.grid    { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--s4); }
+.grid > *, .row > * { min-width: 0; }
+.measure { max-width: var(--measure); }
+
+/* ── type: Outfit for headlines, Fragment Mono for everything else ────── */
+.h1, h1, .h2, h2, .h3, h3 {
+  font-family: var(--font-head); font-weight: 500; letter-spacing: -0.02em;
+  line-height: 1.12; margin: 0; text-wrap: balance;
+}
+.h1, h1 { font-size: var(--t-xl); }
+.h2, h2 { font-size: var(--t-lg); }
+.h3, h3 { font-size: var(--t-md); letter-spacing: -0.01em; }
+p { margin: 0; }
+.lead  { font-size: var(--t-md); color: var(--dim); max-width: var(--measure); }
+.label {                               /* uppercase eyebrow / section marker */
+  font-size: var(--t-label); text-transform: uppercase; letter-spacing: 0.1em; color: var(--dim);
+}
+.meta  { font-size: var(--t-xs); color: var(--dim); }
+.dim   { color: var(--dim); }
+.num   { font-variant-numeric: tabular-nums; }
+
+/* Fragment Mono has one weight: emphasis is colour, never bold or italic. */
+em, strong, b, i { font-style: normal; font-weight: inherit; color: var(--link); }
+a { color: var(--link); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+code, kbd { font-family: var(--font-mono); font-size: 0.92em; background: var(--inset); padding: 1px 5px; border-radius: 4px; }
+pre { background: var(--inset); padding: var(--s4); border-radius: var(--r-card); overflow-x: auto; margin: 0; }
+pre code { background: none; padding: 0; }
+
+:focus-visible { outline: 2px solid var(--fill); outline-offset: 2px; }
+
+/* ── sky panel: one per section ───────────────────────────────────────────
+   The baked cloud image comes from `gen_pattern.py sky`. A page sets
+   --sky-img per theme (url() for a site, a data: URI in an Artifact);
+   without it the panel falls back to the plain gradient. */
+.sky {
+  position: relative; overflow: hidden; border-radius: var(--r-panel);
+  padding: clamp(var(--s5), 4vw, var(--s8));
+  background: var(--sky-img, linear-gradient(180deg, var(--sky), var(--bg) 85%)) center top / cover no-repeat,
+              var(--bg);
+  display: flex; flex-direction: column; gap: var(--s5);
+}
+.sky + .sky { margin-top: var(--s5); }   /* plain ground shows between panels */
+
+/* ── glass card ───────────────────────────────────────────────────────── */
+.glass {
+  background: var(--glass); border: 1px solid var(--glass-edge); border-radius: var(--r-card);
+  padding: var(--s5);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(1.2);
+  backdrop-filter: blur(var(--blur)) saturate(1.2);
+}
+.glass.flush { padding: 0; overflow: hidden; }
+
+/* ── buttons: all glass pills ─────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: var(--s3);
+  font: inherit; font-size: var(--t-sm); line-height: 1; color: var(--text);
+  padding: 10px 18px; border-radius: var(--r-pill); cursor: pointer; text-decoration: none;
+  background: var(--glass); border: 1px solid var(--glass-edge);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.btn:hover { border-color: var(--border-control); }
+.btn--primary { color: var(--link); border: 1.5px solid var(--fill); }   /* the one cue: a blue edge */
+.btn--primary:hover { border-color: var(--link); }
+.btn--link {                            /* the secondary action */
+  background: none; border-color: transparent; -webkit-backdrop-filter: none; backdrop-filter: none;
+  padding-inline: var(--s2); text-decoration: underline; text-underline-offset: 4px;
+}
+.btn--danger { color: var(--err); border: 1.5px solid var(--err); }
+.btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+.btn--sm { font-size: var(--t-xs); padding: 7px 12px; }
+
+/* ── chips ────────────────────────────────────────────────────────────── */
+.chip {
+  display: inline-flex; align-items: center; gap: var(--s2);
+  font-size: var(--t-xs); line-height: 1; padding: 5px 10px; border-radius: var(--r-pill);
+  background: var(--surface); color: var(--dim); border: 1px solid var(--border);
+}
+.chip--accent { background: var(--wash); color: var(--link); border-color: transparent; }
+.chip--ok   { color: var(--ok);   border-color: var(--ok); }
+.chip--warn { color: var(--warn); border-color: var(--warn); }
+.chip--err  { color: var(--err);  border-color: var(--err); }
+
+/* ── tables ───────────────────────────────────────────────────────────── */
+.table-wrap {                          /* the only element allowed to scroll sideways */
+  overflow-x: auto; border-radius: var(--r-card); border: 1px solid var(--border); background: var(--surface);
+}
+table { width: 100%; border-collapse: collapse; font-size: var(--t-xs); font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+th { background: var(--inset); color: var(--dim); font-weight: inherit; text-transform: uppercase;
+     letter-spacing: 0.08em; font-size: var(--t-label); }
+tr:last-child td { border-bottom: 0; }
+
+/* ── nav: a glass pill bar ────────────────────────────────────────────── */
+.nav {
+  display: flex; align-items: center; gap: var(--s5); flex-wrap: wrap;
+  padding: 8px 10px 8px 16px; border-radius: var(--r-pill);
+  background: var(--glass); border: 1px solid var(--glass-edge);
+  -webkit-backdrop-filter: blur(var(--blur)); backdrop-filter: blur(var(--blur));
+}
+.logo { display: inline-flex; align-items: center; gap: var(--s3); color: var(--text); text-decoration: none;
+        font-family: var(--font-head); font-weight: 500; font-size: var(--t-md); letter-spacing: -0.02em; }
+.logo svg { width: 22px; height: 22px; }
+.nav-links { display: flex; gap: var(--s5); margin-inline-start: auto; font-size: var(--t-sm); }
+.nav-links a { color: var(--dim); text-decoration: none; }
+.nav-links a:hover, .nav-links [aria-current] { color: var(--text); }
+
+/* ── forms ────────────────────────────────────────────────────────────── */
+.field { display: flex; flex-direction: column; gap: var(--s2); }
+.field label { font-size: var(--t-xs); color: var(--dim); }
+input, select, textarea {
+  font: inherit; font-size: var(--t-sm); color: var(--text); background: var(--surface);
+  border: 1px solid var(--border-control); border-radius: var(--r-card); padding: 9px 12px; min-width: 0;
+}
+input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--fill); outline-offset: 1px; }
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass, .btn, .nav { background: var(--surface); }   /* no blur: solid, still on-palette */
+}
+
+/* ── imagery: icons and blueprint tiles (symbols in blueprint.svg) ────────
+   <svg class="icon"><use href="#i-chip"/></svg>
+   <figure class="tile"><svg viewBox="0 0 200 150">
+     <use class="bp-sheet" href="#sheet-frame"/><use href="#d-module"/><use class="bp-dims" href="#d-module-dims"/>
+   </svg></figure> */
+.icon { width: 24px; height: 24px; flex: none; color: inherit; --hl: var(--fill); }
+.tile {
+  margin: 0; display: grid; place-items: center; aspect-ratio: 4 / 3; max-width: 100%;
+  background: var(--tile); color: var(--tile-line); --hl: var(--tile-hl);
+  border-radius: var(--r-card); container-type: inline-size; overflow: hidden;
+}
+.tile svg { width: 100%; height: auto; display: block; }
+@container (max-width: 320px) {         /* small: the bare object, no sheet */
+  .tile .bp-sheet, .tile .bp-dims { display: none; }
+  .tile svg { width: 84%; }
+}
+
+</style>
+<style>
+  .wrap { padding-block: var(--s5) var(--s9); }
+  .bar { display: flex; gap: var(--s3); flex-wrap: wrap; align-items: center; }
+  .seg { display: inline-flex; padding: 3px; border-radius: var(--r-pill); background: var(--glass); border: 1px solid var(--glass-edge); }
+  .seg button { font: inherit; font-size: var(--t-xs); padding: 7px 14px; border-radius: var(--r-pill); border: 0; background: none; color: var(--dim); cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--surface); color: var(--link); }
+  .btn[aria-pressed="true"] { border: 1.5px solid var(--fill); color: var(--link); }
+  .scroll { overflow-x: auto; border-radius: var(--r-card); }
+  .board { margin: 0; background: var(--tile); color: var(--tile-line); border-radius: var(--r-card); min-width: 820px; }
+  .board svg { display: block; width: 100%; height: auto; }
+  .board text { font-family: var(--font-mono); fill: var(--tile-line); }
+  .grp { fill: none; stroke: var(--tile-line); stroke-opacity: .22; stroke-dasharray: 3 4; }
+  .glabel { font-size: 10px; letter-spacing: .12em; fill-opacity: .6; }
+  .e { fill: none; stroke: var(--tile-line); stroke-opacity: .3; stroke-width: 1.2; }
+  .e.off { stroke-opacity: .12; }
+  .e.on { stroke: var(--tile-hl); stroke-opacity: 1; stroke-width: 2.2; }
+  .elabel { font-size: 11px; }
+  .elabelbg { fill: var(--tile); stroke: var(--tile-hl); stroke-width: 1; }
+  .node { cursor: pointer; }
+  .node rect { fill: var(--tile); stroke: var(--tile-line); stroke-opacity: .75; stroke-width: 1.2; }
+  .node .nt { font-size: 12.5px; }
+  .node .ns { font-size: 10.5px; fill-opacity: .68; }
+  .node.ext rect { stroke-dasharray: 6 3; stroke-opacity: .55; }
+  .node.on rect { stroke: var(--tile-hl); stroke-opacity: 1; stroke-width: 2; }
+  .node.sel rect { fill: color-mix(in srgb, var(--tile-hl) 24%, var(--tile)); stroke: var(--tile-hl); stroke-opacity: 1; stroke-width: 2.5; }
+  .node.dead rect { stroke-dasharray: 2 4; stroke-opacity: .5; }
+  .node.dead text { text-decoration: line-through; fill-opacity: .5; }
+  .node.ghost rect { stroke-dasharray: 5 4; stroke-opacity: .55; }
+  .node:focus-visible rect { stroke: var(--tile-hl); stroke-width: 3; }
+  .node:focus { outline: none; }
+  .layer { cursor: pointer; }
+  .layer rect { fill: var(--tile); stroke: var(--tile-line); stroke-opacity: .5; stroke-width: 1; }
+  .layer.sel rect { fill: color-mix(in srgb, var(--tile-hl) 24%, var(--tile)); stroke: var(--tile-hl); stroke-opacity: 1; stroke-width: 2; }
+  .layer:focus { outline: none; } .layer:focus-visible rect { stroke: var(--tile-hl); stroke-width: 3; }
+  .cols { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--s4); }
+  @media (max-width: 760px) { .cols { grid-template-columns: minmax(0, 1fr); } }
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--s2); }
+  .steps button { width: 100%; text-align: left; font: inherit; font-size: var(--t-sm); line-height: 1.45; color: var(--dim);
+    background: none; border: 1px solid transparent; border-radius: var(--r-card); padding: 7px 10px; cursor: pointer; display: grid; grid-template-columns: 2ch 1fr; gap: var(--s3); }
+  .steps button[aria-current="true"] { color: var(--text); border-color: var(--fill); background: var(--glass); }
+  .steps .n { color: var(--link); font-variant-numeric: tabular-nums; }
+  .d h3 { margin-bottom: var(--s3); }
+  .d dl { margin: var(--s4) 0 0; display: grid; gap: var(--s4); }
+  .d dt { font-size: var(--t-label); text-transform: uppercase; letter-spacing: .1em; color: var(--dim); }
+  .d dd { margin: var(--s2) 0 0; font-size: var(--t-sm); max-width: 62ch; }
+  .tri { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s4); }
+  .tri ul { margin: var(--s3) 0 0; padding-left: 1.2em; font-size: var(--t-sm); display: flex; flex-direction: column; gap: var(--s2); }
+  .hint { font-size: var(--t-xs); color: var(--text); }
+  figcaption { font-size: var(--t-xs); color: var(--tile-line); opacity: .75; padding: var(--s3) var(--s4) var(--s4); }
+  .glass .dim, .glass .meta { color: var(--text); opacity: .78; }
+</style>
+
+<div class="wrap">
+ <div class="stack">
+  <section class="sky">
+    <span class="label" style="color:var(--text)">Architecture &middot; v1, after the grilling</span>
+    <h1>The Loam</h1>
+    <p class="lead" style="color:var(--text)">Members of a closed group lend idle CPU and GPU time to one pool on a LAN. The Loam is its own system. It drives cirrocumulus (dashed boxes), which stays untouched on a local socket. Click any box, then follow a trace.</p>
+  </section>
+
+  <section class="sky">
+    <div class="bar">
+      <div class="seg" role="group" aria-label="Trace">
+        <button type="button" id="t-task" aria-pressed="true">Run a task</button>
+        <button type="button" id="t-app" aria-pressed="false">Serve an app request</button>
+        <button type="button" id="t-join" aria-pressed="false">Join a machine</button>
+      </div>
+      <button type="button" class="btn btn--sm" id="reclaim" aria-pressed="false">Owner returns on Laptop A</button>
+      <button type="button" class="btn btn--sm" id="down" aria-pressed="false">Stop the server</button>
+    </div>
+    <span class="hint" id="modehint"></span>
+
+    <div class="scroll" tabindex="0" aria-label="Architecture diagram, scrolls sideways on small screens">
+    <figure class="board">
+      <svg id="svg" viewBox="0 0 1010 550" role="img" aria-label="Architecture of The Loam: member CLI and app visitors on the left, a single Loam server on the Pi (scheduler, registry, ledger, pool CA, ingress), and four nodes each running a Loam worker beside an unchanged cirrocumulus agent, over identity, mTLS transport and local owner policy."></svg>
+      <figcaption>Solid boxes belong to The Loam. Dashed boxes are cirrocumulus, which only its own worker talks to, over a local Unix socket.</figcaption>
+    </figure>
+    </div>
+
+    <div class="cols">
+      <div class="glass">
+        <div class="row" style="justify-content:space-between; margin-bottom:var(--s4)">
+          <h3 id="tracename">Run a task</h3>
+          <div class="row" style="gap:var(--s3)">
+            <button type="button" class="btn btn--sm" id="prev">Back</button>
+            <button type="button" class="btn btn--sm btn--primary" id="play">Play</button>
+            <button type="button" class="btn btn--sm" id="next">Next</button>
+          </div>
+        </div>
+        <ol class="steps" id="steps"></ol>
+      </div>
+      <div class="glass d" id="detail" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="sky">
+    <h2>What the pool needs to work</h2>
+    <p class="lead" style="color:var(--text)">Sorted by when it bites. The build order in the repo's design doc follows the first column.</p>
+    <div class="tri">
+      <div class="glass"><h3>Needed first</h3><ul>
+        <li><em>Surface client</em> with a contract test against the real cirrocumulus socket.</li>
+        <li><em>Pool identity</em>: CA, one-time join tokens, member and node credentials.</li>
+        <li><em>Worker</em> with owner policy, a RAM budget, and a <code>loam-</code> name prefix.</li>
+        <li><em>Registry</em> from heartbeats, and a multi-node <code>loam top</code>.</li>
+        <li><em>Scheduler</em> with leases, retries and backoff.</li>
+        <li><em>Ingress</em> with a route cache that survives a server stop.</li>
+        <li><em>Tasks</em> that are idempotent, with a timeout and a size cap.</li>
+        <li><em>Ledger</em> of usage and security events.</li>
+      </ul></div>
+      <div class="glass"><h3>Makes it pleasant</h3><ul>
+        <li>Exit code and file copy-out in cirrocumulus, as single-machine features.</li>
+        <li>A chunked content store, so tasks can move more than a small payload.</li>
+        <li>GPU batch on the host, outside microVMs, when the owner's card is free.</li>
+        <li>Server replication, and quotas that read the ledger.</li>
+        <li>Real input-idle detection, if cgroup weights are not enough.</li>
+      </ul></div>
+      <div class="glass"><h3>Not in v1</h3><ul>
+        <li>Anything cluster-shaped inside cirrocumulus.</li>
+        <li>Distributed training (research track; only a placement-group field is reserved).</li>
+        <li>GPU inside a microVM.</li>
+        <li>Windows, macOS or non-KVM donors.</li>
+        <li>Machines across home networks, relays and NAT traversal.</li>
+        <li>Credits, tokens, payments, or strangers on the public internet.</li>
+      </ul></div>
+    </div>
+  </section>
+ </div>
+</div>
+
+<script>
+(function () {
+  var NS = "http://www.w3.org/2000/svg";
+  var $ = function (id) { return document.getElementById(id); };
+  var svg = $("svg");
+  var state = { trace: "task", reclaim: false, down: false, step: 0, sel: "sched", timer: null };
+
+  var GY = [14, 108, 202, 296];
+  var NODES = [
+    { k: "n1", t: "Desktop", cls: "dedicated" }, { k: "n2", t: "Mini PC", cls: "dedicated" },
+    { k: "n3", t: "Laptop A", cls: "opportunistic" }, { k: "n4", t: "Laptop B", cls: "opportunistic" }
+  ];
+  var LANE = { n1: 470, n2: 485, n3: 500, n4: 515 };
+  var N = {
+    client:  { x: 20,  y: 60,  w: 150, h: 60, t: "Member CLI", s: "signed credential" },
+    visitor: { x: 20,  y: 310, w: 150, h: 60, t: "App visitor", s: "browser or service" },
+    reg:     { x: 230, y: 44,  w: 210, h: 44, t: "Node registry", s: "heartbeats, capacity", srv: 1 },
+    sched:   { x: 230, y: 112, w: 210, h: 44, t: "Queue + scheduler", s: "leases, retries", srv: 1 },
+    ledger:  { x: 230, y: 180, w: 210, h: 44, t: "Ledger", s: "signed, hash-chained", srv: 1 },
+    ca:      { x: 230, y: 248, w: 210, h: 44, t: "Pool CA + join", s: "tokens, certificates", srv: 1 },
+    ingress: { x: 230, y: 316, w: 210, h: 44, t: "Ingress", s: "route cache, own process" }
+  };
+  NODES.forEach(function (n, i) {
+    var gy = GY[i];
+    N[n.k + "w"] = { x: 560, y: gy + 30, w: 150, h: 46, t: "Worker", s: n.cls, node: n.k };
+    N[n.k + "c"] = { x: 810, y: gy + 30, w: 120, h: 46, t: "cirrocumulus", s: "unchanged", ext: 1, node: n.k };
+  });
+  var L = {
+    id:     { y: 400, t: "Identity: pool CA, join tokens, member and node credentials, all signed" },
+    net:    { y: 448, t: "Transport: mTLS on the LAN, only workers face the network" },
+    policy: { y: 496, t: "Owner policy on every node: pause, schedule, CPU and RAM caps. Local wins" }
+  };
+  var GROUPS = [{ x: 210, y: 14, w: 250, h: 360, t: "THE LOAM SERVER · PI" }].concat(NODES.map(function (n, i) {
+    return { x: 540, y: GY[i], w: 400, h: 84, t: "NODE · " + n.t.toUpperCase() + " · " + n.cls.toUpperCase() };
+  }));
+
+  // s: step number per trace key (n = task, r = task after the owner returns, a = app request, j = join)
+  var E = [
+    { a: "client",  b: "sched",   s: { n: 1, r: 1 }, label: "signed task" },
+    { a: "sched",   b: "reg",     s: { n: 2, r: 2 }, label: "who fits?" },
+    { a: "sched",   b: "n3w",     s: { n: 3, r: 3 }, label: "lease + task" },
+    { a: "n3w",     b: "sched",   s: { n: 7, r: 4 }, label: { n: "result", r: "refused" } },
+    { a: "sched",   b: "n4w",     s: { r: 5 }, label: "re-lease" },
+    { a: "n3w",     b: "n3c",     s: { n: 5 }, label: "start VM" },
+    { a: "n3c",     b: "n3w",     s: { n: 6 }, label: "status + logs" },
+    { a: "n4w",     b: "n4c",     s: { r: 6 }, label: "start VM" },
+    { a: "n4c",     b: "n4w",     s: { r: 7 }, label: "status + logs" },
+    { a: "n4w",     b: "sched",   s: { r: 8 }, label: "result" },
+    { a: "sched",   b: "ledger",  s: { n: 8, r: 9 }, label: "usage entry" },
+    { a: "sched",   b: "client",  s: { n: 8, r: 9 }, label: "result" },
+    { a: "sched",   b: "ingress", s: { a: 1 }, label: "routes", path: "M440,134 H452 V338 H440", lx: 452, ly: 236, needsServer: 1 },
+    { a: "visitor", b: "ingress", s: { a: 2 }, label: "request" },
+    { a: "ingress", b: "visitor", s: { a: 5 }, label: "response" },
+    { a: "ingress", b: "n1c",     s: { a: 4 }, label: "mTLS" },
+    { a: "ingress", b: "n2c",     s: {} },
+    { a: "n1c",     b: "ingress", s: { a: 5 }, label: "response" },
+    { a: "client",  b: "ca",      s: { j: 1 }, label: "join token", path: "M95,120 V270 H228", lx: 95, ly: 200 },
+    { a: "n4w",     b: "ca",      s: { j: 2 }, label: "token" },
+    { a: "ca",      b: "n4w",     s: { j: 3 }, label: "node cert" },
+    { a: "ca",      b: "ledger",  s: { j: 4 }, label: "join event" },
+    { a: "n4w",     b: "reg",     s: { j: 5 }, label: "heartbeat" }
+  ];
+
+  var TRACES = {
+    task: { name: "Run a task" },
+    app:  { name: "Serve an app request" },
+    join: { name: "Join a machine" }
+  };
+  var S_N = [
+    { t: "A member signs a task: image, command, resource ask, timeout.", nodes: ["client"] },
+    { t: "The scheduler picks a node with free RAM and vCPU that the owner's policy allows." },
+    { t: "It leases the task to Laptop A's worker. The lease expires if the worker goes quiet." },
+    { t: "The worker checks owner policy: not paused, inside the schedule, under the caps.", nodes: ["n3w"] },
+    { t: "The worker asks its local cirrocumulus to start a one-shot microVM with no network." },
+    { t: "The worker polls status and the console until the VM ends, and reads the exit marker." },
+    { t: "The worker returns the result, signed, within the size cap." },
+    { t: "The server keeps the result, appends a usage entry to the ledger, and tells the member." }
+  ];
+  var S_R = [
+    S_N[0], S_N[1], S_N[2],
+    { t: "Laptop A's owner is back. The worker refuses the lease and says why. A task already running would be killed after a grace period and requeued the same way.", nodes: ["n3w"] },
+    { t: "After a backoff the scheduler re-leases the task to Laptop B." },
+    { t: "Laptop B's worker starts a one-shot microVM through its cirrocumulus." },
+    { t: "It polls status and the console until the VM ends." },
+    { t: "It returns the result." },
+    S_N[7]
+  ];
+  var S_A = [
+    { t: "When an app is placed, the server pushes its routes to the ingress, which caches them." },
+    { t: "A visitor's request reaches the ingress." },
+    { t: "The ingress picks a healthy replica from its cached routes.", nodes: ["ingress"] },
+    { t: "It forwards over mTLS to that node's cirrocumulus edge. Replicas start cold, so a parked one wakes first." },
+    { t: "The edge reaches the microVM and the response travels back the same way." }
+  ];
+  var S_J = [
+    { t: "The admin issues a one-time join token that carries an owner label." },
+    { t: "On the new machine, the worker presents the token to the server and asks for a certificate." },
+    { t: "The pool CA signs a node certificate. The node and its owner are recorded.", nodes: ["ca"] },
+    { t: "The server appends the join to the ledger." },
+    { t: "The worker starts heartbeats with its capacity. The registry now lists the node." }
+  ];
+
+  var OWNER_NOTE = "Local policy always wins on an opportunistic node. A refusal is a normal outcome.";
+  var D = {
+    client: ["Member CLI", "Runs on a member's own machine. Signs tasks and app deploys with the member credential, a client credential that is separate from every node certificate. Admins also issue join tokens and revoke with it.", "Where the credential is stored, and how a lost one is revoked."],
+    visitor: ["App visitor", "Anyone reaching a hosted app: a browser on the LAN or another service.", "Who may reach apps. cirrocumulus routes are public by design, so per-route auth would be The Loam's job."],
+    reg: ["Node registry", "Heartbeats from every worker: capacity, class, load, owner-policy state, and link latency and bandwidth to peers (kept for the training research track).", "Heartbeat interval, and how long silence means a node is gone."],
+    sched: ["Queue + scheduler", "Holds pending tasks and app placements in SQLite on the Pi. A pure scoring function picks a node from free RAM, free vCPU, hard filters (class, policy snapshot, headroom) and spread. Grants leases, retries with backoff, and requeues expired leases. One server, no standby; replication comes later.", "Scoring weights and lease length."],
+    ledger: ["Ledger", "Append-only, hash-chained and signed by the server. Holds node-signed usage reports plus membership and security events: join, revoke, denied requests. Read-only and no credits. A member sees their own rows; admins see all.", "Retention, and where the signing key lives."],
+    ca: ["Pool CA + join", "Issues one-time join tokens with an owner label, signs node certificates, and revokes members, nodes and credentials independently. This replaces the cluster CA that cirrocumulus's own roadmap had planned.", "Token and certificate lifetimes."],
+    ingress: ["Ingress", "A separate process next to the server, with a route cache. It balances an app's replicas by forwarding over mTLS to each node's cirrocumulus edge, and keeps serving when the server stops. Apps run only on dedicated nodes.", "Health-check rules, and what happens to in-flight requests when a replica leaves."],
+    id: ["Identity + trust", "A closed group: the admin issues one-time tokens, nothing joins without one. Tasks, leases, results and usage reports are all signed, so any record shows who said it.", "Revocation flow when someone leaves the group."],
+    net: ["Transport", "mTLS between workers and the server over one LAN. The cirrocumulus agent is never reachable from the network, only through its own worker. An overlay for several home networks is a later, separate decision.", "Nothing for v1; revisit when a second home network joins."],
+    policy: ["Owner policy", OWNER_NOTE + " Tasks run at the lowest cgroup CPU weight so the owner's own work wins every contested cycle. RAM is capped (default 25% of the host) and placements over it are refused. Knobs: pause, schedule windows, CPU cap, RAM cap, stop on battery. GPU-busy and thermal checks arrive with GPU batch.", "Whether cgroup weights alone feel invisible enough, or real input-idle detection is needed."]
+  };
+  NODES.forEach(function (n) {
+    D[n.k + "w"] = ["Worker (" + n.t + ", " + n.cls + ")",
+      "The only network-facing piece on the node. Talks to the server over mTLS and to cirrocumulus over its local socket. It touches only VMs it created (reserved <code>loam-</code> name prefix), enforces its own budget and the owner policy" +
+      (n.cls === "dedicated" ? ", and is never preempted. Runs apps and tasks." : ", and reclaims the machine for its owner: a running task is killed after a grace period and requeued elsewhere. Runs tasks only."),
+      "How the worker prepares a root filesystem: run <code>cirro image pull</code>, then pass cirrocumulus the absolute path. cirrocumulus's own audit flagged that path as sensitive."];
+    D[n.k + "c"] = ["cirrocumulus (" + n.t + ")",
+      "The existing single-machine system: Firecracker microVMs, jailer, cgroup limits, the edge router and snapshots. It listens on a local Unix socket only. The Loam changes nothing here. Any request is limited to a feature a single machine would want on its own.",
+      "Today a finished VM gives an end reason and a console log, with no exit code. Stopgap: the task wrapper prints an exit marker and the worker reads it. Large results need a file copy-out feature."];
+  });
+
+  function el(name, attrs, parent) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function key() { return state.trace === "task" ? (state.reclaim ? "r" : "n") : state.trace === "app" ? "a" : "j"; }
+  function steps() {
+    if (state.down && state.trace !== "app")
+      return [{ t: "The server is stopped. Nothing new is placed or enrolled, and submitted tasks wait. Running apps are unaffected: switch to \"Serve an app request\"." }];
+    if (state.trace === "task") return state.reclaim ? S_R : S_N;
+    return state.trace === "app" ? S_A : S_J;
+  }
+  function box(id) { var n = N[id]; return { x: n.x, y: n.y, w: n.w, h: n.h }; }
+  function ctr(b) { return [b.x + b.w / 2, b.y + b.h / 2]; }
+  function clip(b, tx, ty) {
+    var cx = b.x + b.w / 2, cy = b.y + b.h / 2, dx = tx - cx, dy = ty - cy;
+    var s = Math.min(dx ? (b.w / 2) / Math.abs(dx) : 1e9, dy ? (b.h / 2) / Math.abs(dy) : 1e9);
+    return [cx + dx * s, cy + dy * s];
+  }
+  function pts(arr) { return arr.map(function (p, i) { return (i ? "L" : "M") + p[0].toFixed(1) + "," + p[1].toFixed(1); }).join(" "); }
+  function hasReverse(e) { return E.some(function (o) { return o.a === e.b && o.b === e.a; }); }
+
+  // Returns { d, lx, ly } for an edge.
+  function geom(e) {
+    if (e.path) return { d: e.path, lx: e.lx, ly: e.ly };
+    var A = N[e.a], B = N[e.b], back = hasReverse(e) ? 1 : 0;
+    var aSrv = A.srv || e.a === "ingress", bSrv = B.srv || e.b === "ingress";
+    var aNode = !!A.node, bNode = !!B.node;
+    if ((aSrv && bNode) || (aNode && bSrv)) {            // server <-> node: orthogonal through that node's lane
+      var srv = aSrv ? A : B, nd = aSrv ? B : A, k = nd.node, lane = LANE[k] + (aNode ? 6 : 0);
+      var sx = srv.x + srv.w, sy = srv.y + srv.h / 2, ny = nd.y + nd.h / 2;
+      var gy = GY[+k.slice(1) - 1];
+      var p;
+      if (nd.ext) {                                      // into cirrocumulus's edge: over the top of the worker
+        var cx = nd.x + nd.w / 2, top = gy + 22 + (aNode ? 5 : 0);
+        p = [[sx, sy], [lane, sy], [lane, top], [cx, top], [cx, nd.y]];
+        if (aNode) p.reverse();
+        return { d: pts(p), lx: cx - 62, ly: top };
+      }
+      p = [[sx, sy], [lane, sy], [lane, ny], [nd.x, ny]];
+      if (aNode) p.reverse();
+      return { d: pts(p), lx: lane, ly: (sy + ny) / 2 };
+    }
+    var a = box(e.a), b = box(e.b), cA = ctr(a), cB = ctr(b);
+    var p1 = clip(a, cB[0], cB[1]), p2 = clip(b, cA[0], cA[1]);
+    if (back) {                                          // opposite arrows on the same pair run side by side
+      var dx = p2[0] - p1[0], dy = p2[1] - p1[1], len = Math.hypot(dx, dy) || 1, ox = -dy / len * 6, oy = dx / len * 6;
+      p1 = [p1[0] + ox, p1[1] + oy]; p2 = [p2[0] + ox, p2[1] + oy];
+    }
+    return { d: pts([p1, p2]), lx: (p1[0] + p2[0]) / 2, ly: (p1[1] + p2[1]) / 2 };
+  }
+
+  function draw() {
+    svg.textContent = "";
+    var defs = el("defs", {}, svg);
+    [["ar", "var(--tile-line)", ".5"], ["arh", "var(--tile-hl)", "1"]].forEach(function (m) {
+      var mk = el("marker", { id: m[0], viewBox: "0 0 10 10", refX: "9", refY: "5", markerWidth: "7", markerHeight: "7", orient: "auto-start-reverse" }, defs);
+      el("path", { d: "M0,1 L9,5 L0,9 z", fill: m[1], "fill-opacity": m[2] }, mk);
+    });
+    GROUPS.forEach(function (g) {
+      el("rect", { class: "grp", x: g.x, y: g.y, width: g.w, height: g.h, rx: 10 }, svg);
+      var t = el("text", { class: "glabel", x: g.x + 12, y: g.y + 15 }, svg); t.textContent = g.t;
+    });
+
+    var k = key(), list = steps(), cur = state.step ? list[state.step - 1] : null;
+    var activeStep = state.step;
+    var onNodes = {}, labels = [];
+    if (cur && cur.nodes) cur.nodes.forEach(function (id) { onNodes[id] = 1; });
+    var blocked = state.down && state.trace !== "app";
+    E.forEach(function (e) {
+      var raw = e.s[k], mine = raw != null;
+      var on = mine && activeStep > 0 && !blocked && raw === activeStep && !(e.needsServer && state.down);
+      var g = geom(e);
+      var cls = "e" + (on ? " on" : (mine ? "" : " off"));
+      el("path", { d: g.d, class: cls, "marker-end": "url(#" + (on ? "arh" : "ar") + ")" }, svg);
+      if (on) {
+        onNodes[e.a] = 1; onNodes[e.b] = 1;
+        var lab = typeof e.label === "object" ? e.label[k] : e.label;
+        if (lab) labels.push({ text: lab, x: g.lx, y: g.ly });
+      }
+    });
+
+    Object.keys(N).forEach(function (id) {
+      var b = box(id), n = N[id];
+      var cls = "node" + (n.ext ? " ext" : "") + (onNodes[id] ? " on" : "") + (state.sel === id ? " sel" : "");
+      var sub = n.s;
+      if (state.down && n.srv) cls += " dead";
+      if (state.reclaim && id === "n3w") { cls += " ghost"; sub = "owner active"; }
+      var g = el("g", { class: cls, tabindex: "0", role: "button", "data-id": id, "aria-label": n.t + ", " + sub }, svg);
+      el("rect", { x: b.x, y: b.y, width: b.w, height: b.h, rx: 8 }, g);
+      var t1 = el("text", { class: "nt", x: b.x + b.w / 2, y: b.y + b.h / 2 - 2, "text-anchor": "middle" }, g); t1.textContent = n.t;
+      var t2 = el("text", { class: "ns", x: b.x + b.w / 2, y: b.y + b.h / 2 + 13, "text-anchor": "middle" }, g); t2.textContent = sub;
+    });
+
+    Object.keys(L).forEach(function (id) {
+      var g = el("g", { class: "layer" + (state.sel === id ? " sel" : ""), tabindex: "0", role: "button", "data-id": id, "aria-label": L[id].t }, svg);
+      el("rect", { x: 20, y: L[id].y, width: 920, height: 40, rx: 8 }, g);
+      var t = el("text", { x: 480, y: L[id].y + 25, "text-anchor": "middle", style: "font-size:12.5px" }, g); t.textContent = L[id].t;
+    });
+
+    labels.forEach(function (l) {
+      var t = el("text", { class: "elabel", x: l.x, y: l.y + 4, "text-anchor": "middle" }, svg); t.textContent = l.text;
+      var bb = t.getBBox();
+      var r = el("rect", { class: "elabelbg", x: bb.x - 6, y: bb.y - 3, width: bb.width + 12, height: bb.height + 6, rx: 6 }, svg);
+      svg.insertBefore(r, t);
+    });
+  }
+
+  function detail() {
+    var d = D[state.sel], h = $("detail");
+    h.innerHTML = "<h3></h3><dl><div><dt>What it does</dt><dd></dd></div><div><dt>Still to decide</dt><dd></dd></div></dl>";
+    h.querySelector("h3").textContent = d[0];
+    var dd = h.querySelectorAll("dd");
+    dd[0].innerHTML = d[1]; dd[1].innerHTML = d[2];
+  }
+  function stepsUi() {
+    var ol = $("steps"); ol.textContent = "";
+    steps().forEach(function (s, i) {
+      var li = document.createElement("li"), b = document.createElement("button");
+      b.type = "button"; b.setAttribute("aria-current", String(state.step === i + 1));
+      b.innerHTML = '<span class="n">' + (i + 1) + "</span><span></span>"; b.lastChild.textContent = s.t;
+      b.addEventListener("click", function () { stop(); go(i + 1); });
+      li.appendChild(b); ol.appendChild(li);
+    });
+  }
+  function hint() {
+    $("modehint").textContent = state.down
+      ? (state.trace === "app" ? "Server stopped: the ingress still serves from its route cache." : "Server stopped: nothing is placed or enrolled until it returns.")
+      : state.trace === "task" && state.reclaim ? "Laptop A's owner is back, so the worker refuses and the task moves on."
+      : "Everything is on one LAN. The Pi hosts the server and ingress and runs no microVMs.";
+  }
+  function render() {
+    draw(); detail(); stepsUi(); hint();
+    ["task", "app", "join"].forEach(function (t) { $("t-" + t).setAttribute("aria-pressed", String(state.trace === t)); });
+    $("reclaim").setAttribute("aria-pressed", String(state.reclaim));
+    $("down").setAttribute("aria-pressed", String(state.down));
+    $("reclaim").disabled = state.trace !== "task";
+    $("tracename").textContent = TRACES[state.trace].name;
+    $("play").textContent = state.timer ? "Pause" : "Play";
+  }
+  function go(n) { state.step = Math.max(0, Math.min(steps().length, n)); render(); }
+  function stop() { if (state.timer) { clearInterval(state.timer); state.timer = null; } }
+  function setTrace(t) { stop(); state.trace = t; state.step = 0; render(); }
+
+  svg.addEventListener("click", function (ev) {
+    var g = ev.target.closest("[data-id]"); if (!g) return;
+    state.sel = g.getAttribute("data-id"); render();
+  });
+  svg.addEventListener("keydown", function (ev) {
+    if (ev.key !== "Enter" && ev.key !== " ") return;
+    var g = ev.target.closest("[data-id]"); if (!g) return;
+    ev.preventDefault(); state.sel = g.getAttribute("data-id"); render();
+    var again = svg.querySelector('[data-id="' + state.sel + '"]'); if (again) again.focus();
+  });
+  $("t-task").onclick = function () { setTrace("task"); };
+  $("t-app").onclick = function () { setTrace("app"); };
+  $("t-join").onclick = function () { setTrace("join"); };
+  $("reclaim").onclick = function () { stop(); state.reclaim = !state.reclaim; state.step = 0; render(); };
+  $("down").onclick = function () { stop(); state.down = !state.down; state.step = 0; render(); };
+  $("prev").onclick = function () { stop(); go(state.step - 1); };
+  $("next").onclick = function () { stop(); go(state.step + 1); };
+  $("play").onclick = function () {
+    if (state.timer) { stop(); render(); return; }
+    if (state.step >= steps().length) state.step = 0;
+    state.timer = setInterval(function () {
+      if (state.step >= steps().length) { stop(); render(); return; }
+      go(state.step + 1);
+    }, 1800);
+    go(state.step + 1);
+  };
+  render();
+})();
+</script>
