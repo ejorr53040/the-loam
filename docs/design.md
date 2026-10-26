@@ -86,14 +86,24 @@ peers. Nothing else until research says what is feasible over home links.
 7. Demo: the 200-task test above.
 GPU, training and NAT traversal stay off the list until slice 7 is done.
 
-## Open (not grilled yet)
-- Shared understanding has not been confirmed by Ethan; no code should start before it is.
+## Late decisions (Q32, Q33)
+- `loam top` shows one row per node (class, CPU, RAM, state, owner policy), then running tasks and
+  app replicas with lease age. Reuse the look of `cirro top`.
+- The Pi runs the server and ingress only. It never runs microVMs and is not a cirrocumulus
+  Machine for the pool.
+
+## Status
+- Shared understanding confirmed by Ethan on 2026-10-26 ("33 looks good, do the steps in this
+  order"). The frontend will be built in a separate chat from `docs/frontend-interface.md`.
+- cirrocumulus ADR 0011 written 2026-10-26 (uncommitted in that repo).
+
+## Open
 - (Resolved) `cirro run` sends the command as argv to guest-init over vsock, and the guest powers
   off when it exits, so the host only sees an end reason and the console log. Result stopgap: the
   task wrapper prints an exit marker and a small result on the console and the worker parses it.
   The 256 MB cap needs the file copy-out feature in cirrocumulus; the console path is for small
   results only.
-- What the multi-node `loam top` shows, and the Pi's exact role as server host.
-- The ADR in cirrocumulus marking M8's cluster plans as not planned (waiting on confirmation).
+- Roadmap, README and CLI edits in cirrocumulus that ADR 0011 lists as follow-ups.
+- Browser authentication for the dashboard (see `frontend-interface.md`).
 - (Resolved) Diagram redrawn: `docs/architecture.html` (open in a browser). Published copy:
   https://claude.ai/artifact/PseQPvYnDXW9BXLZd6ohzb

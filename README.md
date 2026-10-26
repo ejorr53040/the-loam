@@ -11,4 +11,6 @@ Status: design grilled 2026-10-25, no code yet.
 
 - `CONTEXT.md`: the glossary. Use these words.
 - `docs/design.md`: every decision made so far, the build order, the open items.
+- `docs/frontend-interface.md`: what the UI must show and do (draft contract).
+- `docs/architecture.html`: the interactive architecture diagram.
 - `docs/adr/`: decisions that are hard to reverse.
